@@ -7,6 +7,28 @@ Original file is located at
     https://colab.research.google.com/drive/1Ro0cnh0eSDABqMwM7l9zceXjH6VfdAju
 """
 
+def Dijkstra(graph, contrainte, source):
+    dist = {node: float('inf') for node in graph}
+    dist[source] = 0
+    unvisited = set(graph.keys())
+
+    while unvisited:
+        current = None
+        for node in unvisited:
+            if current is None or dist[node] < dist[current]:
+                current = node
+
+        if dist[current] == float('inf'):
+            break
+        unvisited.remove(current)
+
+        for neighbor, weight in graph[current]:
+            new_dist = dist[current] + weight + contrainte[current][neighbor]
+            if new_dist < dist[neighbor]:
+                dist[neighbor] = new_dist
+
+    print(dist)
+
 graph = {
     'A': [('B', 2), ('C', 5)],
     'B': [('A', 2), ('C', 1), ('D', 4)],
@@ -21,24 +43,33 @@ contrainte = {
     'D': {'B': 0, 'C': 0}
 }
 
-source = 'A'
-dist = {node: float('inf') for node in graph} #dictionnaire (clé, valeur) où toutes les valeurs sont à l'infini
-dist[source] = 0
-unvisited = set(graph.keys()) #tableau contenant toutes les clés
+Dijkstra(graph, contrainte, 'A')
 
-while unvisited:
-    current = None
-    for node in unvisited:
-          if current is None or dist[node] < dist[current]:
-              current = node
+def Coloriage(graph):
+    degres = {node: len(graph[node]) for node in graph}
+    deg_max = max(degres.values())
+    print(degres)
+    print(deg_max)
 
-    if dist[current] == float('inf'):
-        break
-    unvisited.remove(current)
+    couleurs = ["rouge", "bleu", "vert", "jaune", "violet", "orange", "rose", "cyan"]
+    color_assignment = {}
 
-    for neighbor, weight in graph[current]:
-        new_dist = dist[current] + weight + contrainte[current][neighbor]
-        if new_dist < dist[neighbor]:
-            dist[neighbor] = new_dist
+    for node in graph:
+        voisins = []
+        for element in graph[node]:
+            voisin = element[0]
+            voisins.append(voisin)
 
-print(dist)
+        couleurs_voisins = set()
+        for voisin in voisins:
+            if voisin in color_assignment:
+                couleur_du_voisin = color_assignment[voisin]
+                couleurs_voisins.add(couleur_du_voisin)
+
+        for couleur in couleurs:
+            if couleur not in couleurs_voisins:
+                color_assignment[node] = couleur
+                break
+
+    print(color_assignment)
+Coloriage(graph)
